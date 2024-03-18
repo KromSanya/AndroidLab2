@@ -7,10 +7,10 @@ data class Hero(
 )
 
 object Constant {
-    val size = 3
-    val HomeScreen = "FirstScreen"
-    val DetailScreen = "SecondScreen"
-    val ChooseHero = "Choose your hero"
+
+    const val HomeScreen = "FirstScreen"
+    const val DetailScreen = "SecondScreen"
+    const val ChooseHero = "Choose your hero"
 
     val averFont = 28.sp
     val bigFont = 36.sp
@@ -36,4 +36,5 @@ object Constant {
         ironman,
         spiderman
     )
+    val size = heroes.size
 }
