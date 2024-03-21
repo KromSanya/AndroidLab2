@@ -1,38 +1,35 @@
 package com.example.androidlab
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
+import androidx.navigation.NavGraph
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.compose.rememberNavController
 
-sealed class Screen(val route: String) {
-    data object Home : Screen(route = Constant.HomeScreen)
-    data object Detail : Screen(route = Constant.DetailScreen + "/{index}")
-}
+//@Composable
+//fun NavGraph() {
+//    val navController = rememberNavController()
+//
+//    NavHost(navController = navController, startDestination = "first_screen") {
+//        // Здесь вы можете определить навигационные маршруты
+//        // Например:
+//        composable("first_screen") {
+//            navController.navigate("Screen2")
+//        }
+//        composable("second_screen/{heroName}") { backStackEntry ->
+//            val heroName = backStackEntry.arguments?.getString("heroName")
+//           // SecondScreen()
+//        }
+//    }
+//}
 
-@Composable
-fun SetupNavGraph(
-    navController: NavHostController
-) {
-    NavHost(navController = navController, startDestination = Screen.Home.route)
-    {
-        composable(
-            route = Screen.Home.route
-        ) {
-            FirstScreen(
-                navController = navController
-            )
-        }
-        composable(
-            route = Screen.Detail.route,
-            arguments = listOf(navArgument("index") {
-                type = NavType.IntType
-            })
-        ) {
-            SecondScreen(navController = navController)
-        }
-    }
-}
-
+val imageUrls = listOf(
+    R.drawable.deadpool,
+    R.drawable.ironman,
+    R.drawable.spider
+)
+val namesHeroes = listOf(
+    "DeadPool",
+    "Iron Man",
+    "Spider Man"
+)
