@@ -98,9 +98,3 @@ fun FirstScreen(navController: NavController) {
 
     }
 }
-
-//@OptIn(ExperimentalFoundationApi::class)
-//@Composable
-//fun HeroSc(function: (Any?) -> Unit) {
-//
-//}
