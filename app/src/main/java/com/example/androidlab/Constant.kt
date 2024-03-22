@@ -15,9 +15,26 @@ object Constant {
     val averFont = 28.sp
     val bigFont = 36.sp
 
+    val deadpool = Hero(
+        R.drawable.deadpool,
+        "DeadPool",
+        "Please don’t make the supersuit green...or animated!"
+    )
+    val ironman = Hero(
+        R.drawable.ironman,
+        "Iron Man",
+        "You know who I am"
+    )
+    val spiderman = Hero(
+        R.drawable.spider,
+        "Spider Man",
+        "In iron suit"
+    )
+
+
     val heroes = listOf(
-        Hero(R.drawable.deadpool, "DeadPool", "Please don’t make the supersuit green...or animated!"),
-        Hero(R.drawable.ironman, "Iron Man", "You know who I am"),
-        Hero(R.drawable.spider, "Spider Man", "In iron suit")
+        deadpool,
+        ironman,
+        spiderman
     )
 }
