@@ -8,8 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 
 sealed class Screen(val route: String) {
-    object Home : Screen(route = "screen1")
-    object Detail : Screen(route = "SecondScreen/{index}")
+    object Home : Screen(route = Constant.HomeScreen)
+    object Detail : Screen(route = Constant.DetailScreen + "/{index}")
 }
 
 @Composable
@@ -21,7 +21,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.Home.route
         ) {
-            FirstScreen (
+            FirstScreen(
                 navController = navController
             )
         }
@@ -30,24 +30,9 @@ fun SetupNavGraph(
             arguments = listOf(navArgument("index") {
                 type = NavType.IntType
             })
-            ){
+        ) {
             SecondScreen(navController = navController)
         }
     }
 }
 
-val imageUrls = listOf(
-    R.drawable.deadpool,
-    R.drawable.ironman,
-    R.drawable.spider
-)
-val names = listOf(
-    "DeadPool",
-    "Iron Man",
-    "Spider Man"
-)
-val heroesPhrase = listOf(
-    "Please don’t make the supersuit green...or animated!",
-    "You know who I'am",
-    "In iron suit"
-)

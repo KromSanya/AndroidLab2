@@ -34,7 +34,7 @@ fun SecondScreen(navController: NavController) {
     ) {
 
         AsyncImage(
-            model = imageUrls[index],
+            model = Constant.imageUrls[index],
             contentDescription = null,
             modifier = Modifier
               //  .clip(RoundedCornerShape(20.dp))
@@ -45,18 +45,18 @@ fun SecondScreen(navController: NavController) {
             Modifier.align(Alignment.BottomStart)
         ) {
             Text(
-                text = names[index],
+                text = Constant.names[index],
                 color = Color.White,
                 modifier = Modifier
-                    .padding(16.dp),
-                style = TextStyle(fontSize = 28.sp)
+                    .padding(10.dp),
+                style = TextStyle(fontSize = Constant.bigFont)
             )
             Text(
-                text = heroesPhrase[index],
+                text = Constant.heroesPhrase[index],
                 color = Color.White,
                 modifier = Modifier
-                    .padding(16.dp),
-                style = TextStyle(fontSize = 28.sp)
+                    .padding(10.dp),
+                style = TextStyle(fontSize = Constant.averFont)
             )
         }
         

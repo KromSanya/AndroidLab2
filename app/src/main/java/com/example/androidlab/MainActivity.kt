@@ -37,24 +37,6 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             AndroidLabTheme {
                 SetupNavGraph(navController)
-//                NavHost(
-//                    navController = navController,
-//                    startDestination = "screen1"
-//                ) {
-//
-//                    composable("screen1") {
-//                        FirstScreen { index ->
-//                            navController.navigate("SecondScreen?index=$index"){
-//                                popUpTo("SecondScreen"){
-//                                    inclusive = true
-//                                }
-//                            }
-//                        }
-//                    }
-//                    composable("SecondScreen") {
-//                        SecondScreen(navController)
-//                    }
-//                }
             }
         }
     }
@@ -77,9 +59,9 @@ fun FirstScreen(navController: NavController) {
             modifier = Modifier.padding(vertical = 20.dp)
         )
         Text(
-            text = "Choose your hero",
+            text = Constant.ChooseHero,
             modifier = Modifier.padding(bottom = 20.dp),
-            style = TextStyle(fontSize = 28.sp)
+            style = TextStyle(fontSize = Constant.bigFont)
         )
 
 
@@ -87,27 +69,27 @@ fun FirstScreen(navController: NavController) {
             state = state, flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
         ) {
 
-            items(imageUrls.size) { index ->
+            items(Constant.imageUrls.size) { index ->
                 Box(modifier = Modifier
                     .padding(horizontal = 40.dp, vertical = screenHeight * 0.05f)
                     .fillMaxSize()
                     .clickable {
-                        navController.navigate(route = "SecondScreen/$index")
+                        navController.navigate(route = Constant.DetailScreen +"/$index")
                     }) {
                     AsyncImage(
-                        model = imageUrls[index],
+                        model = Constant.imageUrls[index],
                         contentDescription = null,
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .fillMaxSize()
                     )
                     Text(
-                        text = names[index],
+                        text = Constant.names[index],
                         color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
                             .align(Alignment.BottomStart),
-                        style = TextStyle(fontSize = 28.sp)
+                        style = TextStyle(fontSize = Constant.bigFont)
                     )
                 }
             }
