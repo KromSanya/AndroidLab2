@@ -26,8 +26,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 
@@ -38,24 +36,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             AndroidLabTheme {
-                NavHost(
-                    navController = navController,
-                    startDestination = "screen1"
-                ) {
-
-                    composable("screen1") {
-                        FirstScreen { index ->
-                            navController.navigate("SecondScreen?index=$index"){
-                                popUpTo("SecondScreen"){
-                                    inclusive = true
-                                }
-                            }
-                        }
-                    }
-                    composable("SecondScreen") {
-                        SecondScreen(navController)
-                    }
-                }
+                SetupNavGraph(navController)
+//                NavHost(
+//                    navController = navController,
+//                    startDestination = "screen1"
+//                ) {
+//
+//                    composable("screen1") {
+//                        FirstScreen { index ->
+//                            navController.navigate("SecondScreen?index=$index"){
+//                                popUpTo("SecondScreen"){
+//                                    inclusive = true
+//                                }
+//                            }
+//                        }
+//                    }
+//                    composable("SecondScreen") {
+//                        SecondScreen(navController)
+//                    }
+//                }
             }
         }
     }
@@ -63,17 +62,19 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FirstScreen(function: (Int) -> Unit) {
+fun FirstScreen(navController: NavController) {
     Column(
         Modifier.background(color = Color.DarkGray),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val navController = NavController
+        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+        val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+        val state = rememberLazyListState()
+
         AsyncImage(
             model = R.drawable.ic_logo,
             contentDescription = null,
-            modifier = Modifier
-                .padding(vertical = 20.dp)
+            modifier = Modifier.padding(vertical = 20.dp)
         )
         Text(
             text = "Choose your hero",
@@ -81,23 +82,18 @@ fun FirstScreen(function: (Int) -> Unit) {
             style = TextStyle(fontSize = 28.sp)
         )
 
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-        val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-        val state = rememberLazyListState()
+
         LazyRow(
-            state = state,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
+            state = state, flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
         ) {
 
             items(imageUrls.size) { index ->
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 40.dp, vertical = screenHeight * 0.05f)
-                        .fillMaxSize()
-                        .clickable {
-                            function(index)
-                        }
-                ) {
+                Box(modifier = Modifier
+                    .padding(horizontal = 40.dp, vertical = screenHeight * 0.05f)
+                    .fillMaxSize()
+                    .clickable {
+                        navController.navigate(route = "SecondScreen/$index")
+                    }) {
                     AsyncImage(
                         model = imageUrls[index],
                         contentDescription = null,
@@ -106,7 +102,7 @@ fun FirstScreen(function: (Int) -> Unit) {
                             .fillMaxSize()
                     )
                     Text(
-                        text = "$index",
+                        text = names[index],
                         color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
