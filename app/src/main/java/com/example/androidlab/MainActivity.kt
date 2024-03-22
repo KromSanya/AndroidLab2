@@ -61,7 +61,7 @@ fun FirstScreen(navController: NavController) {
         Text(
             text = Constant.ChooseHero,
             modifier = Modifier.padding(bottom = 20.dp),
-            style = TextStyle(fontSize = Constant.bigFont)
+            style = TextStyle(fontSize = Constant.bigFont, color = Color.White)
         )
 
 
@@ -69,7 +69,7 @@ fun FirstScreen(navController: NavController) {
             state = state, flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
         ) {
 
-            items(Constant.imageUrls.size) { index ->
+            items(Constant.size) { index ->
                 Box(modifier = Modifier
                     .padding(horizontal = 40.dp, vertical = screenHeight * 0.05f)
                     .fillMaxSize()
@@ -77,14 +77,14 @@ fun FirstScreen(navController: NavController) {
                         navController.navigate(route = Constant.DetailScreen +"/$index")
                     }) {
                     AsyncImage(
-                        model = Constant.imageUrls[index],
+                        model = Constant.heroes[index].imageUrl,
                         contentDescription = null,
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .fillMaxSize()
                     )
                     Text(
-                        text = Constant.names[index],
+                        text = Constant.heroes[index].name,
                         color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)

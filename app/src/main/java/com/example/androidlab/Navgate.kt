@@ -8,8 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 
 sealed class Screen(val route: String) {
-    object Home : Screen(route = Constant.HomeScreen)
-    object Detail : Screen(route = Constant.DetailScreen + "/{index}")
+    data object Home : Screen(route = Constant.HomeScreen)
+    data object Detail : Screen(route = Constant.DetailScreen + "/{index}")
 }
 
 @Composable
