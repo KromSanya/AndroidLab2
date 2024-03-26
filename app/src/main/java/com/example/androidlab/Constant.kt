@@ -31,7 +31,6 @@ object Constant {
         "In iron suit"
     )
 
-
     val heroes = listOf(
         deadpool,
         ironman,
