@@ -8,10 +8,6 @@ import androidx.compose.ui.unit.sp
 import java.math.BigInteger
 import java.security.MessageDigest
 
-//data class Hero(
-//    val imageUrl: Int, val name: String, val phrase: String
-//)
-
 object Constant {
 
 
