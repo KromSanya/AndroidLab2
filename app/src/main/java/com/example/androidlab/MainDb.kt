@@ -1,21 +1,31 @@
 package com.example.androidlab
 
-import androidx.room.DatabaseConfiguration
-import androidx.room.InvalidationTracker
+import android.content.Context
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 
-class MainDb : RoomDatabase() {
-    override fun clearAllTables() {
-        TODO("Not yet implemented")
+
+@Database(entities = [Character::class, CharacterDetail::class], version = 1)
+abstract class MainDb : RoomDatabase() {
+
+    abstract fun characterDao(): CharacterDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: MainDb? = null
+
+        fun getDB(context: Context): MainDb {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    MainDb::class.java,
+                    "MarvelDB.db"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
     }
-
-    override fun createInvalidationTracker(): InvalidationTracker {
-        TODO("Not yet implemented")
-    }
-
-    override fun createOpenHelper(config: DatabaseConfiguration): SupportSQLiteOpenHelper {
-        TODO("Not yet implemented")
-    }
-
 }

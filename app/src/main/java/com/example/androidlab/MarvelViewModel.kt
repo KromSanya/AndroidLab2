@@ -20,7 +20,6 @@ import java.io.IOException
 
 class MarvelViewModel : ViewModel() {
     private val api = RetrofitInstance.api
-
     private var isLoading = false
 
     fun fetchCharacters() {

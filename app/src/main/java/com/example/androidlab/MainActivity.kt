@@ -11,8 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.androidlab.ui.theme.AndroidLabTheme
-
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
@@ -33,17 +31,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.androidlab.Constant.APIKEY
 import com.example.androidlab.Constant.characters
-import com.example.androidlab.Constant.hash
-import com.example.androidlab.Constant.ts
 
-/** Your public key  bcebef1a106eb00c9aa79ec1ae131cfb
- *  Your private key e82270d64d19c69d98c1b1ad0c7e4b7a505c8f0d
- *  developer.marvel.com
- *  md5(ts+privateKey+publicKey)
- */
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
