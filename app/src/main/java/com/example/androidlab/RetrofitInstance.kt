@@ -1,5 +1,6 @@
 package com.example.androidlab
 
+import com.example.androidlab.Constant.BASE_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -9,7 +10,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 object RetrofitInstance {
-    private const val BASE_URL = "https://gateway.marvel.com/v1/public/"
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.material3.Text
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.rxjava3.EmptyResultSetException
 import com.example.androidlab.Constant.APIKEY
 import com.example.androidlab.Constant._characterDetail
 import com.example.androidlab.Constant._characters
@@ -38,31 +39,19 @@ class MarvelViewModel() : ViewModel() {
                 offset += limit
                 _characters.value = roomCharacters
             } catch (e: IOException) {
-                Log.e("MarvelViewModel", "IOException: ${e.message}", e)
+                try {
+                    loadCharactersFromDb(database)
+                } finally {
+                    Log.e("MarvelViewModel", "IOException: ${e.message}", e)
+                }
             } catch (e: HttpException) {
-                Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
-
+                try {
+                    loadCharactersFromDb(database)
+                } finally {
+                    Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
+                }
             } finally {
                 isLoading = false
-            }
-        }
-    }
-
-    fun fetchCharacterDetail(characterId: String, database: MainDb) {
-        viewModelScope.launch {
-            Log.d("CharacterDetailID", characterId)
-            try {
-                val response = api.getCharacterDetails(characterId, APIKEY, hash, ts)
-                Log.d("FetchDetail", response.toString())
-                response.data.results.firstOrNull()?.let { characterDetail ->
-                    database.characterDao()
-                        .insertCharacterDetail(characterDetail.toRoomCharacterDetail())
-                    _characterDetail.value = characterDetail.toRoomCharacterDetail()
-                } ?: Log.e("FetchDetail", "No character details found in the response")
-            } catch (e: IOException) {
-                Log.e("MarvelViewModel", "IOException: ${e.message}", e)
-            } catch (e: HttpException) {
-                Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
             }
         }
     }
@@ -70,11 +59,35 @@ class MarvelViewModel() : ViewModel() {
     fun loadCharactersFromDb(database: MainDb) {
         viewModelScope.launch {
             val charactersFromDb = database.characterDao().getAllCharacters().firstOrNull()
-            if (charactersFromDb != null && charactersFromDb.isNotEmpty()) {
+            if (!charactersFromDb.isNullOrEmpty()) {
                 _characters.value = charactersFromDb
             }
         }
     }
+
+
+    fun fetchCharacterDetail(characterId: Int, database: MainDb) {
+        viewModelScope.launch {
+            try {
+                loadCharacterDetailFromDb(characterId, database)
+            } catch (e: EmptyResultSetException) {
+                try {
+                    val response = api.getCharacterDetails(characterId.toString(), APIKEY, hash, ts)
+                    Log.d("FetchDetail", response.toString())
+                    response.data.results.firstOrNull()?.let { characterDetail ->
+                        database.characterDao()
+                            .insertCharacterDetail(characterDetail.toRoomCharacterDetail())
+                        _characterDetail.value = characterDetail.toRoomCharacterDetail()
+                    } ?: Log.e("FetchDetail", "No character details found in the response")
+                } catch (e: IOException) {
+                    Log.e("MarvelViewModel", "IOException: ${e.message}", e)
+                } catch (e: HttpException) {
+                    Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
+                }
+            }
+        }
+    }
+
 
     fun loadCharacterDetailFromDb(id: Int, database: MainDb) {
         viewModelScope.launch {
@@ -83,8 +96,8 @@ class MarvelViewModel() : ViewModel() {
             }
         }
     }
-}
 
+}
 
 fun Character.toRoomCharacter(): RoomCharacter {
     return RoomCharacter(

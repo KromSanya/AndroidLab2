@@ -56,13 +56,12 @@ fun FirstScreen(
 ) {
 
     val state = rememberLazyListState()
-
     val characters by characters.collectAsState()
+
     LaunchedEffect(state) {
         snapshotFlow { state.layoutInfo.visibleItemsInfo.lastOrNull() }
             .collect { lastVisibleItem ->
                 if (lastVisibleItem == null || lastVisibleItem.index >= characters.size - 5) {
-                    viewModel.loadCharactersFromDb(database)
                     viewModel.fetchCharacters(database)
                 }
             }
@@ -96,10 +95,7 @@ fun FirstScreen(
                     .padding(horizontal = 40.dp, vertical = screenHeight * 0.05f)
                     .fillMaxSize()
                     .clickable {
-
-                        // viewModel.fetchCharacterDetail(index.toString(), database)
-                        viewModel.fetchCharacterDetail(character.id.toString(), database)
-                        viewModel.loadCharacterDetailFromDb(character.id, database)
+                        viewModel.fetchCharacterDetail(character.id, database)
                         navController.navigate(route = Constant.DetailScreen + "/${character.id}")
                     }) {
                     AsyncImage(

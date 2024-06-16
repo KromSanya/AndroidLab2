@@ -12,7 +12,7 @@ import java.security.MessageDigest
 
 object Constant {
 
-
+    const val BASE_URL = "https://gateway.marvel.com/v1/public/"
     const val APIKEY = "bcebef1a106eb00c9aa79ec1ae131cfb"
     const val PRIVATEKEY = "e82270d64d19c69d98c1b1ad0c7e4b7a505c8f0d"
 
