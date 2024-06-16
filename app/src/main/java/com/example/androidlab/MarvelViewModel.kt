@@ -12,6 +12,7 @@ import com.example.androidlab.Constant.hash
 import com.example.androidlab.Constant.limit
 import com.example.androidlab.Constant.offset
 import com.example.androidlab.Constant.ts
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-
+@HiltViewModel
 class MarvelViewModel() : ViewModel() {
     private val api = RetrofitInstance.api
     private var isLoading = false

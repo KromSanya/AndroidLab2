@@ -64,7 +64,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.adapters)
 
     testImplementation(libs.junit)
@@ -83,6 +83,11 @@ dependencies {
     annotationProcessor(libs.androidx.room.room.compiler)
     ksp(libs.androidx.room.room.compiler)
     implementation (libs.androidx.room.ktx)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    ksp(libs.androidx.hilt.compiler)
 
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
