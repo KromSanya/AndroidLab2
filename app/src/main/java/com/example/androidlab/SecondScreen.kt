@@ -1,5 +1,6 @@
 package com.example.androidlab
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,42 +25,53 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.androidlab.Constant.characterDetail
 
 @Composable
-fun SecondScreen(navController: NavController) {
+fun SecondScreen(
+    navController: NavController,
+    database: MainDb,
+    viewModel: MarvelViewModel = MarvelViewModel()
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val arguments = navBackStackEntry?.arguments
     val index = arguments?.getInt("index") ?: 0
+
+    val characterDetail by characterDetail.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.DarkGray)
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(((Constant.characterDetail?.thumbnail?.path ?: "https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg") +"." + Constant.characters[index].thumbnail.extension).replace("http://", "https://"))
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            modifier = Modifier
-              //  .clip(RoundedCornerShape(20.dp))
-                .fillMaxSize(),
-            contentScale = ContentScale.FillBounds
-        )
-        Column(
-            Modifier.align(Alignment.BottomStart)
-        ) {
-            Text(
-                text = Constant.characters[index].name,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(10.dp),
-                style = TextStyle(fontSize = Constant.bigFont)
+        characterDetail?.let { character ->
+            Log.d("FetchDetail", characterDetail.toString())
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(
+                        (character.thumbnailPath + "." + character.thumbnailExtension).replace(
+                            "http://",
+                            "https://"
+                        )
+                    )
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds
             )
-            Constant.characterDetail?.let {
+            Column(
+                Modifier.align(Alignment.BottomStart)
+            ) {
                 Text(
-                    text = it.description,
+                    text = character.name,
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(10.dp),
+                    style = TextStyle(fontSize = Constant.bigFont)
+                )
+                Text(
+                    text = character.description,
                     color = Color.White,
                     modifier = Modifier
                         .padding(10.dp),
@@ -65,6 +79,5 @@ fun SecondScreen(navController: NavController) {
                 )
             }
         }
-        
     }
 }

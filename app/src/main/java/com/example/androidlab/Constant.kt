@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.math.BigInteger
 import java.security.MessageDigest
 
@@ -22,18 +24,19 @@ object Constant {
     val averFont = 28.sp
     val bigFont = 36.sp
 
-    var characters = mutableStateListOf<Character>()
-        private set
+    var _characters = MutableStateFlow<List<RoomCharacter>>(emptyList())
+    var characters: StateFlow<List<RoomCharacter>> = _characters
 
-    var characterDetail by mutableStateOf<CharacterDetail?>(null)
+    var _characterDetail = MutableStateFlow<RoomCharacterDetail?>(null)
+    var characterDetail: StateFlow<RoomCharacterDetail?> = _characterDetail
 
 
     val md5 = MessageDigest.getInstance("MD5")
-    val ts =  System.currentTimeMillis().toString()
+    val ts = System.currentTimeMillis().toString()
     val input = ts + PRIVATEKEY + APIKEY
     val hashByteArray = md5.digest(input.toByteArray())
     val hash = BigInteger(1, hashByteArray).toString(16).padStart(32, '0')
 
-     var offset = 0
-     var limit = 20
+    var offset = 0
+    var limit = 20
 }

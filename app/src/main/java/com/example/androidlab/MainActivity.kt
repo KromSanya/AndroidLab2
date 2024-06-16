@@ -1,7 +1,6 @@
 package com.example.androidlab
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -34,13 +35,13 @@ import coil.request.ImageRequest
 import com.example.androidlab.Constant.characters
 
 class MainActivity : ComponentActivity() {
-
+    val database by lazy { MainDb.getDB(this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
             AndroidLabTheme {
-                SetupNavGraph(navController)
+                SetupNavGraph(navController, database)
             }
         }
     }
@@ -48,18 +49,25 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FirstScreen(navController: NavController, viewModel: MarvelViewModel = MarvelViewModel()) {
+fun FirstScreen(
+    navController: NavController,
+    database: MainDb,
+    viewModel: MarvelViewModel = MarvelViewModel()
+) {
 
     val state = rememberLazyListState()
 
+    val characters by characters.collectAsState()
     LaunchedEffect(state) {
         snapshotFlow { state.layoutInfo.visibleItemsInfo.lastOrNull() }
             .collect { lastVisibleItem ->
                 if (lastVisibleItem == null || lastVisibleItem.index >= characters.size - 5) {
-                    viewModel.fetchCharacters()
+                    viewModel.loadCharactersFromDb(database)
+                    viewModel.fetchCharacters(database)
                 }
             }
     }
+
     Column(
         Modifier.background(color = Color.DarkGray),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -83,17 +91,25 @@ fun FirstScreen(navController: NavController, viewModel: MarvelViewModel = Marve
             flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
         ) {
             items(characters.size) { index ->
+                val character = characters[index]
                 Box(modifier = Modifier
                     .padding(horizontal = 40.dp, vertical = screenHeight * 0.05f)
                     .fillMaxSize()
                     .clickable {
-                        viewModel.fetchCharacterDetail(characters[index].id.toString())
-                        navController.navigate(route = Constant.DetailScreen + "/$index")
+
+                        // viewModel.fetchCharacterDetail(index.toString(), database)
+                        viewModel.fetchCharacterDetail(character.id.toString(), database)
+                        viewModel.loadCharacterDetailFromDb(character.id, database)
+                        navController.navigate(route = Constant.DetailScreen + "/${character.id}")
                     }) {
-                    Log.d("CharacterRow", "Image URL:" + characters[index].thumbnail.path + "." + characters[index].thumbnail.extension)
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data((characters[index].thumbnail.path + "." + characters[index].thumbnail.extension).replace("http://", "https://"))
+                            .data(
+                                (character.thumbnailPath + "." + character.thumbnailExtension).replace(
+                                    "http://",
+                                    "https://"
+                                )
+                            )
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
@@ -104,7 +120,7 @@ fun FirstScreen(navController: NavController, viewModel: MarvelViewModel = Marve
                         contentScale = ContentScale.FillBounds
                     )
                     Text(
-                        text = characters[index].name,
+                        text = character.name,
                         color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
@@ -115,6 +131,5 @@ fun FirstScreen(navController: NavController, viewModel: MarvelViewModel = Marve
                 }
             }
         }
-
     }
 }
