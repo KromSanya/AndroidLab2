@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
+    implementation(libs.androidx.adapters)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
