@@ -24,8 +24,8 @@ object Constant {
     val averFont = 28.sp
     val bigFont = 36.sp
 
-    var _characters = MutableStateFlow<List<RoomCharacter>>(emptyList())
-    var characters: StateFlow<List<RoomCharacter>> = _characters
+    var characters = mutableStateListOf<RoomCharacter>()
+        private set
 
     var _characterDetail = MutableStateFlow<RoomCharacterDetail?>(null)
     var characterDetail: StateFlow<RoomCharacterDetail?> = _characterDetail
@@ -38,5 +38,5 @@ object Constant {
     val hash = BigInteger(1, hashByteArray).toString(16).padStart(32, '0')
 
     var offset = 0
-    var limit = 20
+    var limit = 5
 }

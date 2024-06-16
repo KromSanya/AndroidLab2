@@ -40,8 +40,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            val viewModel = MarvelViewModel()
             AndroidLabTheme {
-                SetupNavGraph(navController, database)
+                SetupNavGraph(navController, database, viewModel)
             }
         }
     }
@@ -52,16 +53,15 @@ class MainActivity : ComponentActivity() {
 fun FirstScreen(
     navController: NavController,
     database: MainDb,
-    viewModel: MarvelViewModel = MarvelViewModel()
+    viewModel: MarvelViewModel
 ) {
 
     val state = rememberLazyListState()
-    val characters by characters.collectAsState()
 
     LaunchedEffect(state) {
         snapshotFlow { state.layoutInfo.visibleItemsInfo.lastOrNull() }
             .collect { lastVisibleItem ->
-                if (lastVisibleItem == null || lastVisibleItem.index >= characters.size - 5) {
+                if (lastVisibleItem == null || lastVisibleItem.index >= characters.size - 1) {
                     viewModel.fetchCharacters(database)
                 }
             }

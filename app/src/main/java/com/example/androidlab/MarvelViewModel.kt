@@ -2,19 +2,16 @@ package com.example.androidlab
 
 
 import android.util.Log
-import androidx.compose.material3.Text
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.rxjava3.EmptyResultSetException
 import com.example.androidlab.Constant.APIKEY
 import com.example.androidlab.Constant._characterDetail
-import com.example.androidlab.Constant._characters
+import com.example.androidlab.Constant.characters
 import com.example.androidlab.Constant.hash
 import com.example.androidlab.Constant.limit
 import com.example.androidlab.Constant.offset
 import com.example.androidlab.Constant.ts
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -37,18 +34,20 @@ class MarvelViewModel() : ViewModel() {
                         .map { it.toRoomCharacter() }
                 database.characterDao().insertAll(roomCharacters)
                 offset += limit
-                _characters.value = roomCharacters
-            } catch (e: IOException) {
+                characters.addAll(roomCharacters)
+            } catch (e: Exception) {
                 try {
                     loadCharactersFromDb(database)
                 } finally {
-                    Log.e("MarvelViewModel", "IOException: ${e.message}", e)
-                }
-            } catch (e: HttpException) {
-                try {
-                    loadCharactersFromDb(database)
-                } finally {
-                    Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
+                    when (e) {
+                        is IOException, is HttpException -> Log.e(
+                            "MarvelViewModel",
+                            "${e::class.simpleName}: ${e.message}",
+                            e
+                        )
+
+                        else -> throw e
+                    }
                 }
             } finally {
                 isLoading = false
@@ -60,7 +59,7 @@ class MarvelViewModel() : ViewModel() {
         viewModelScope.launch {
             val charactersFromDb = database.characterDao().getAllCharacters().firstOrNull()
             if (!charactersFromDb.isNullOrEmpty()) {
-                _characters.value = charactersFromDb
+                characters.addAll(charactersFromDb)
             }
         }
     }
@@ -68,22 +67,19 @@ class MarvelViewModel() : ViewModel() {
 
     fun fetchCharacterDetail(characterId: Int, database: MainDb) {
         viewModelScope.launch {
+            loadCharacterDetailFromDb(characterId, database)
             try {
-                loadCharacterDetailFromDb(characterId, database)
-            } catch (e: EmptyResultSetException) {
-                try {
-                    val response = api.getCharacterDetails(characterId.toString(), APIKEY, hash, ts)
-                    Log.d("FetchDetail", response.toString())
-                    response.data.results.firstOrNull()?.let { characterDetail ->
-                        database.characterDao()
-                            .insertCharacterDetail(characterDetail.toRoomCharacterDetail())
-                        _characterDetail.value = characterDetail.toRoomCharacterDetail()
-                    } ?: Log.e("FetchDetail", "No character details found in the response")
-                } catch (e: IOException) {
-                    Log.e("MarvelViewModel", "IOException: ${e.message}", e)
-                } catch (e: HttpException) {
-                    Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
-                }
+                val response = api.getCharacterDetails(characterId.toString(), APIKEY, hash, ts)
+                Log.d("FetchDetail", response.toString())
+                response.data.results.firstOrNull()?.let { characterDetail ->
+                    database.characterDao()
+                        .insertCharacterDetail(characterDetail.toRoomCharacterDetail())
+                    _characterDetail.value = characterDetail.toRoomCharacterDetail()
+                } ?: Log.e("FetchDetail", "No character details found in the response")
+            } catch (e: IOException) {
+                Log.e("MarvelViewModel", "IOException: ${e.message}", e)
+            } catch (e: HttpException) {
+                Log.e("MarvelViewModel", "HttpException: ${e.message}", e)
             }
         }
     }

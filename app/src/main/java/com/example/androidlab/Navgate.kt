@@ -15,11 +15,12 @@ sealed class Screen(val route: String) {
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    database: MainDb
+    database: MainDb,
+    viewModel: MarvelViewModel
 ) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            FirstScreen(navController = navController, database = database)
+            FirstScreen(navController, database, viewModel)
         }
         composable(
             route = Screen.Detail.route,
@@ -27,7 +28,7 @@ fun SetupNavGraph(
                 type = NavType.IntType
             })
         ) {
-            SecondScreen(navController = navController, database = database)
+            SecondScreen(navController, database, viewModel)
         }
     }
 }

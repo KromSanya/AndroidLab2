@@ -31,7 +31,7 @@ import com.example.androidlab.Constant.characterDetail
 fun SecondScreen(
     navController: NavController,
     database: MainDb,
-    viewModel: MarvelViewModel = MarvelViewModel()
+    viewModel: MarvelViewModel
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val arguments = navBackStackEntry?.arguments
