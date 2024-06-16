@@ -21,6 +21,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.Home.route
         ) {
+          //  MarvelApp(viewModel = MarvelViewModel())
             FirstScreen(
                 navController = navController
             )
